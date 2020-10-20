@@ -75,14 +75,12 @@ backend canary
     timeout connect 5s    
     balance roundrobin
 
-    server-template flask 10 _http._tcp.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  check
+    server-template canary 10 _http._tcp.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  check
     #server-template canary 10 green.http.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  
 
 
 resolvers consul
   nameserver consul 127.0.0.1:8600
-  #nameserver consul2 192.168.0.3:8600
-  #nameserver consul3 192.168.0.4:8600
   accepted_payload_size 8192
   hold valid 30s
 EOF
@@ -90,17 +88,6 @@ EOF
         destination = "local/haproxy.cfg"
   }
 
-      // service {
-      //   name = "haproxy"
-
-      //   check {
-      //     name     = "alive"
-      //     type     = "tcp"
-      //     port     = "haproxy_ui"
-      //     interval = "10s"
-      //     timeout  = "10s"
-      //   }
-      // }
 
       resources {
         cpu    = 50
@@ -110,10 +97,6 @@ EOF
           mbits = 10
 
           port "http" {  static = 80    }
-          dns {
-              servers = ["127.0.0.1" ]
-          }
-
            
         }
       }
