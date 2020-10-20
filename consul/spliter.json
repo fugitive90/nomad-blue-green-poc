@@ -1,0 +1,14 @@
+{
+  "kind": "service-splitter",
+  "name": "http",
+  "splits": [
+    {
+      "weight": 0,
+      "service_subset": "blue"
+    },
+    {
+      "weight": 100,
+      "service_subset": "green"
+    }
+  ]
+}
