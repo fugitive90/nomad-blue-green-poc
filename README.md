@@ -21,7 +21,15 @@
 * sudo mkdir -p /opt/cni/bin
 * sudo tar -C /opt/cni/bin -xzf cni-plugins.tgz
 
+## Start nomad
+
+```
+sudo nomad agent -dev -dev-connect
+```
+
 ## Run samples
+
+
 
 * nomad job init consul.nomad
 * nomad job init haproxy.nomad
