@@ -23,7 +23,7 @@
 
 #  Simulate job update
 
-In `http-eecho.nomad` task , replace version key, and run `nomad job init http-echo.nomd`
+In `http-eecho.nomad` task , replace YOUR_VERSION key, and run `nomad job init http-echo.nomd`
 
 ```
 task "app" {
@@ -31,7 +31,7 @@ task "app" {
     driver = "docker"
     config {
         image = "hashicorp/http-echo"
-        args = ["-text", "{ \"version\": \"REPLACE_ME\", \"port\": \"${NOMAD_PORT_http}\" }", "-listen", "0.0.0.0:${NOMAD_PORT_http}" ]
+        args = ["-text", "{ \"version\": \"YOUR_VERSION\", \"port\": \"${NOMAD_PORT_http}\" }", "-listen", "0.0.0.0:${NOMAD_PORT_http}" ]
     }
 
 }

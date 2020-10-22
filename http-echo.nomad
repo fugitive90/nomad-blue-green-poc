@@ -12,7 +12,7 @@ job "bg-sample" {
     
             tags = ["live"]
             canary_tags = ["canary"] 
-              
+
         check {
           type     = "http"
           port     = "http"
@@ -42,7 +42,7 @@ job "bg-sample" {
             driver = "docker"
             config {
                 image = "hashicorp/http-echo"
-                args = ["-text", "{ \"version\": \"v1.26\", \"port\": \"${NOMAD_PORT_http}\" }", "-listen", "0.0.0.0:${NOMAD_PORT_http}" ]
+                args = ["-text", "{ \"version\": \"v1.0\", \"port\": \"${NOMAD_PORT_http}\" }", "-listen", "0.0.0.0:${NOMAD_PORT_http}" ]
             }
 
         }
