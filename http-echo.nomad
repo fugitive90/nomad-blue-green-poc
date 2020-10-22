@@ -1,4 +1,4 @@
-job "test" {
+job "bg-sample" {
 
     datacenters = ["dc1"]
     group "app" {
@@ -11,11 +11,12 @@ job "test" {
             port = "http"      
     
             tags = ["live"]
-            canary_tags = ["canary"]   
+            canary_tags = ["canary"] 
+              
         check {
           type     = "http"
           port     = "http"
-          path = "/test"
+          path     = "/"
           interval = "5s"
           timeout  = "1s"
         }
