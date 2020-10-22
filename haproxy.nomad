@@ -5,7 +5,7 @@ job "haproxy" {
 
   group "haproxy" {
     count = 1
-
+  
 
     task "haproxy" {
       driver = "docker"
@@ -13,7 +13,6 @@ job "haproxy" {
       config {
         image        = "haproxy:2.0"
         network_mode = "host"
-
         volumes = [
           "local/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg",
         ]
@@ -21,6 +20,8 @@ job "haproxy" {
 
       template {
         data = <<EOF
+global
+  stats socket :9000 mode 660 level admin        
 defaults
     mode http
     log global
@@ -35,9 +36,7 @@ frontend stats
    stats show-legends
    no log
 
-frontend front
-
-
+frontend live
     mode http
     #option tcplog
     timeout client 1m
@@ -58,33 +57,33 @@ backend app
 
     option forwardfor
     mode http
-    #no option http-server-close
+
     timeout server 1m
     timeout connect 5s    
     balance roundrobin
-    server-template flask 10 _http._tcp.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  check
-    #server-template flask 10 blue.http.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  
+    server-template live-app 6 _http._live.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  check init-addr none
+
 
 
 backend canary
 
     option forwardfor
     mode http
-    #no option http-server-close
     timeout server 1m
     timeout connect 5s    
     balance roundrobin
+    server-template canary-release 6 _http._canary.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4 check
 
-    server-template canary 10 _http._tcp.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  check
-    #server-template canary 10 green.http.service.consul. resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4  
 
 
 resolvers consul
   nameserver consul 127.0.0.1:8600
   accepted_payload_size 8192
-  hold valid 30s
+  hold valid 5s
 EOF
 
+        change_mode   = "signal"
+        change_signal = "SIGHUP"
         destination = "local/haproxy.cfg"
   }
 
@@ -94,10 +93,12 @@ EOF
         memory = 128
 
         network {
-          mbits = 10
-
-          port "http" {  static = 80    }
-           
+            mode = "host"
+            
+            port "proxy" {
+              static = 80
+              to = 80
+            }
         }
       }
     }

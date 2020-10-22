@@ -1,5 +1,0 @@
-{
-  "kind": "service-defaults",
-  "name": "http",
-  "protocol": "http"
-}
